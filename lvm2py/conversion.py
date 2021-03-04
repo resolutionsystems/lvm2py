@@ -15,14 +15,20 @@
 
 from ctypes.util import find_library
 from ctypes import *
+import os
 
 
-lib = find_library("lvm2app")
+# HACK to allow PATH_TO_LVM2APP=/snap/lxd/19188/lib/x86_64-linux-gnu/liblvm2app.so.2.2 python3
+if 'PATH_TO_LVM2APP' in os.environ:
+    lib_path =os.environ['PATH_TO_LVM2APP']
+    lvmlib = CDLL(os.environ['PATH_TO_LVM2APP'])
+else:
+    lib = find_library("lvm2app")
 
-if not lib:
-    raise Exception("LVM library not found.")
+    if not lib:
+        raise Exception("LVM library not found.")
 
-lvmlib = CDLL(lib)
+    lvmlib = CDLL(lib)
 
 class lvm(Structure):
     pass
